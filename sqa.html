@@ -1,0 +1,163 @@
+MainApplication.java 
+package com.sp.main; 
+ 
+import org.springframework.context.ApplicationContext; 
+import 
+org.springframework.context.annotation.AnnotationConfigApplicationContext; 
+ 
+import com.sp.beans.Student; 
+import com.sp.configFile.ConfigFile; 
+ 
+public class MainApplication { 
+ 
+    public static void main(String[] args) { 
+ 
+        ApplicationContext context = new 
+AnnotationConfigApplicationContext(ConfigFile.class); 
+ 
+        Student stud = context.getBean(Student.class); 
+ 
+        stud.display(); 
+ 
+    } 
+ 
+} 
+  
+ 
+Student.java 
+package com.sp.beans; 
+ 
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Qualifier; 
+ 
+public class Student { 
+ 
+    private String Name; 
+    private int RollNo; 
+ 
+    @Autowired 
+    @Qualifier("createMarkobj1") 
+    private Marks mark; 
+ 
+    public String getName() { 
+        return Name; 
+    } 
+ 
+    public void setName(String name) { 
+        Name = name; 
+    } 
+ 
+    public int getRollNo() { 
+        return RollNo; 
+    } 
+ 
+    public void setRollNo(int rollNo) { 
+        RollNo = rollNo; 
+    } 
+ 
+    public Marks getMark() { 
+        return mark; 
+    } 
+ 
+    public void setMark(Marks mark) { 
+        this.mark = mark; 
+    } 
+ 
+    public void display() { 
+        System.out.println("Name:" + Name); 
+        System.out.println("RollNo:" + RollNo); 
+        System.out.println("Marks:" + mark); 
+    } 
+ 
+} 
+
+Marks,java 
+package com.sp.beans; 
+ 
+public class Marks { 
+ 
+    private int ITskils; 
+    private int PMS; 
+    private int MATHS; 
+    private int FOC; 
+ 
+    public int getITskils() { 
+        return ITskils; 
+    } 
+ 
+    public void setITskils(int iTskils) { 
+        ITskils = iTskils; 
+    } 
+ 
+    public int getPMS() { 
+        return PMS; 
+    } 
+ 
+    public void setPMS(int pMS) { 
+        PMS = pMS; 
+    } 
+ 
+    public int getMATHS() { 
+        return MATHS; 
+    } 
+ 
+    public void setMATHS(int mATHS) { 
+        MATHS = mATHS; 
+    } 
+ 
+    public int getFOC() { 
+        return FOC; 
+    } 
+ 
+    public void setFOC(int fOC) { 
+        FOC = fOC; 
+    } 
+    @Override 
+    public String toString() { 
+        return "ITskills:" + ITskils + ", PMS:" + PMS + ", Maths:" + MATHS + 
+", FOC:" + FOC; 
+    } 
+ 
+} 
+ 
+ConfigFile.java 
+package com.sp.configFile; 
+ 
+import org.springframework.context.annotation.Bean; 
+import org.springframework.context.annotation.Configuration; 
+import com.sp.beans.Marks; 
+import com.sp.beans.Student; 
+ 
+@Configuration 
+public class ConfigFile { 
+ 
+    @Bean 
+    public Marks createMarkobj() { 
+        Marks mar = new Marks(); 
+        mar.setITskils(30); 
+        mar.setPMS(35); 
+        mar.setMATHS(40); 
+        mar.setFOC(39); 
+        return mar; 
+    } 
+ 
+    @Bean 
+    public Marks createMarkobj1() { 
+        Marks mar = new Marks(); 
+        mar.setITskils(18); 
+        mar.setPMS(20); 
+        mar.setMATHS(19); 
+        mar.setFOC(07); 
+        return mar; 
+    } 
+ 
+    @Bean 
+    public Student createStudObj() { 
+        Student stud = new Student(); 
+        stud.setName("Ram"); 
+        stud.setRollNo(17220021); 
+        //stud.setMark(createMarkobj()); 
+        return stud; 
+    } 
+} 
+

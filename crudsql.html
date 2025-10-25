@@ -1,0 +1,194 @@
+SpringCrudOperationsEmployeeApplication.java 
+package com.sp.crud; 
+ 
+import org.springframework.boot.SpringApplication; 
+import org.springframework.boot.autoconfigure.SpringBootApplication; 
+ 
+@SpringBootApplication 
+public class SpringCrudOperationsEmployeeApplication { 
+ 
+    public static void main(String[] args) { 
+        SpringApplication.run(SpringCrudOperationsEmployeeApplication.class, 
+args); 
+    } 
+ 
+} 
+  
+ 
+Employee.java 
+package com.sp.crud.entity; 
+ 
+import jakarta.persistence.Entity; 
+import jakarta.persistence.GeneratedValue; 
+import jakarta.persistence.GenerationType; 
+import jakarta.persistence.Id; 
+import jakarta.persistence.Table; 
+ 
+@Entity 
+@Table 
+public class Employee { 
+ 
+    @Id 
+    @GeneratedValue(strategy = GenerationType.AUTO) 
+    int empid; 
+    String name; 
+ 
+    public int getEmpid() { 
+        return empid; 
+    } 
+ 
+    public void setEmpid(int empid) { 
+        this.empid = empid; 
+    } 
+ 
+    public String getName() { 
+        return name; 
+    } 
+ 
+    public void setName(String name) { 
+        this.name = name; 
+    } 
+ 
+    public Employee(int empid, String name) { 
+        this.empid = empid; 
+        this.name = name; 
+    } 
+ 
+    public Employee() { 
+ 
+    } 
+    @Override 
+    public String toString() { 
+        return "Employee [empid" + empid + ", name" + name + "]"; 
+    } 
+ 
+} 
+EmployeeDAO.java 
+package com.sp.crud.repository; 
+ 
+import org.springframework.data.jpa.repository.JpaRepository; 
+import com.sp.crud.entity.Employee; 
+ 
+public interface EmployeeDAO extends JpaRepository<Employee, Integer> { 
+ 
+} 
+ 
+EmployeeService.java 
+package com.sp.crud.service; 
+ 
+import java.util.List; 
+import com.sp.crud.entity.Employee; 
+ 
+public interface EmployeeService { 
+ 
+    public List<Employee> Display(); 
+ 
+    public Employee addEmployee(Employee em); 
+ 
+    public Employee updateEmployee(Employee em); 
+ 
+    public void deleteEmployee(int Empid); 
+ 
+} 
+ 
+EmployeeServiceImplementation.java 
+
+package com.sp.crud.service; 
+ 
+import java.util.List; 
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.stereotype.Service; 
+import com.sp.crud.entity.Employee; 
+import com.sp.crud.repository.EmployeeDAO; 
+ 
+@Service 
+public class EmployeeServiceImplementation implements EmployeeService { 
+ 
+    @Autowired 
+    private final EmployeeDAO EmployeeDao; 
+ 
+    public EmployeeServiceImplementation(EmployeeDAO employeeDao) { 
+        EmployeeDao = employeeDao; 
+ 
+    } 
+ 
+    @Override 
+    public List<Employee> Display() { 
+        return EmployeeDao.findAll(); 
+    } 
+ 
+    @Override 
+    public Employee addEmployee(Employee em) { 
+        EmployeeDao.save(em); 
+        return em; 
+    } 
+ 
+    @Override 
+    public Employee updateEmployee(Employee em) { 
+        EmployeeDao.save(em); 
+        return em; 
+    } 
+ 
+    @Override 
+    public void deleteEmployee(int Empid) { 
+        Employee entity = EmployeeDao.getReferenceById(Empid); 
+        EmployeeDao.delete(entity); 
+    } 
+ 
+} 
+ 
+MyController.java 
+package com.sp.crud.controller; 
+ 
+import java.util.List; 
+import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.web.bind.annotation.DeleteMapping; 
+import org.springframework.web.bind.annotation.*; 
+import org.springframework.web.bind.annotation.RestController; 
+import com.sp.crud.entity.Employee; 
+import com.sp.crud.service.EmployeeService; 
+ 
+@RestController 
+public class MyController { 
+ 
+    @Autowired 
+    public EmployeeService employeeservice; 
+ 
+    @GetMapping("/") 
+    public String show1() { 
+        return ("<h1>This is Getmapping<h1>"); 
+    } 
+ 
+    @GetMapping("employee") 
+    private List<Employee> show() { 
+        return this.employeeservice.Display(); 
+    } 
+ 
+    @PostMapping("employee") 
+    private Employee show2(@RequestBody Employee em) { 
+        return this.employeeservice.addEmployee(em); 
+    } 
+ 
+    @PutMapping("employee") 
+    private Employee show3(@RequestBody Employee em) { 
+        return this.employeeservice.updateEmployee(em); 
+    } 
+ 
+    @DeleteMapping("employee/{Empid}") 
+    private void show4(@PathVariable int Empid) { 
+        this.employeeservice.deleteEmployee(Empid); 
+    } 
+ 
+} 
+
+application.properties 
+spring.application.name=SpringCrudOperations_EmployeeApplication 
+ 
+server.port=8086 
+ 
+spring.datasource.url=jdbc:mysql://localhost:3306/sys 
+spring.datasource.username=root 
+spring.jpa.hibernate.ddl-auto=update 
+spring.jpa.show-sql=true 
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+ 
