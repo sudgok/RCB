@@ -1,0 +1,114 @@
+App.js
+import './App.css';
+import Login from './Login';
+function App() {
+return (
+<div>
+<Login />
+</div>
+);
+}
+export default App;
+
+Login.js
+import { useState } from 'react';
+import './App.css';
+export default function Login() {
+//React States
+const [errorMessages, setErrorMessages] = useState({});
+const [isSubmitted, setIsSubmitted] = useState(false);
+//User Login Info
+const database = [
+{
+username: "user1",
+password: "pass1"
+},
+{
+username: "user2",
+password: "pass2"
+}
+]
+const errors = {
+uname: "Invalid Username",
+pass: "Invalid Password"
+}
+const handleSubmit = (e) => {
+e.preventDefault();
+var { uname, pass } = document.forms[0];
+//Find user Info
+const userData = database.find((user) => user.username ==
+uname.value);
+
+//Compare User Info
+if (userData) {
+if (userData.password != pass.value) {
+//Invalid Password
+setErrorMessages({ name: "pass", message: errors.pass })
+}
+else {
+setIsSubmitted(true);
+}
+}
+else {
+//Username not found
+setErrorMessages({ name: "uname", message: errors.uname })
+}
+};
+// Generate JSX code for error message
+const renderErrorMessage = (name) =>
+name = errorMessages.name && (
+<div className="error">{errorMessages.message} feedback
+successfully recorded</div>
+);
+const renderForm = (
+<div className="form">
+<form onSubmit={handleSubmit}>
+<div className='input-container'>
+<label>Username:*</label>
+<input type='text' name='uname' required />
+</div>
+<div className='input-container'>
+<label>Password:*</label>
+<input type='password' name='pass' required />
+{renderErrorMessage("pass")}
+</div>
+<div className='button-container'>
+<button>Submit</button>
+</div>
+</form>
+</div>
+);
+return (
+<div className='login-form'>
+<div className='title'>Sign-In</div>
+{isSubmitted ? <div>User is successfully logged in</div> :
+renderForm}
+</div>
+);
+}
+
+App.css
+.App {
+text-align: center;
+background-color: green;
+}
+.label {
+display: block;
+font-size: larger;
+color: white;
+padding: 5px;
+}
+.input {
+font-size: larger;
+padding: 5px;
+margin: 2px;
+}
+.btn {
+color: rgb(0, 0, 0);
+display: block;
+margin: 10px auto;
+}
+.messages {
+display: flex;
+justify-content: center;
+}
